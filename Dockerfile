@@ -17,7 +17,14 @@ RUN git clone https://github.com/pwndbg/pwndbg && \
     cd pwndbg && \
     ./setup.sh
 
-COPY ./bashrc ~/.bashrc
+# install additional tools
+RUN pip3 install pwntools
+
+# customization :p
+COPY bashrc /tmp/bashrc
+
+RUN cat /tmp/bashrc >> ~/.bashrc && \
+    rm /tmp/bashrc
 
 WORKDIR /localmnt
 
