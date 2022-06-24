@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install dependencies
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim file tree python3-ropgadget
+    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim file tree python3-ropgadget zsh
 
 VOLUME /localmnt
 
@@ -22,10 +22,13 @@ RUN pip3 install pwntools
 
 # customization :p
 COPY bashrc /tmp/bashrc
+COPY zshrc /tmp/zshrc
 
 RUN cat /tmp/bashrc >> ~/.bashrc && \
-    rm /tmp/bashrc
+    cat /tmp/zshrc >> ~/.zshrc && \
+    rm /tmp/bashrc && \
+    rm /tmp/zshrc
 
 WORKDIR /localmnt
 
-CMD ["/bin/bash"]
+CMD ["/usr/bin/bash"]
