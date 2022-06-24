@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install dependencies
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim
+    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim file tree
 
 VOLUME /localmnt
 
