@@ -1,21 +1,35 @@
-FROM ubuntu:latest
-
-# just helps with scripts
-ENV DEBIAN_FRONTEND=noninteractive
+FROM archlinux:latest
 
 # install dependencies
-RUN apt-get update -y && \
-    apt-get upgrade -y && \
-    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim file tree python3-ropgadget zsh
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh base-devel go
+
+RUN useradd --system --create-home yay-install && \
+    echo "yay-install ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/yay-install
+
+USER yay-install
+WORKDIR /home/yay-install
+
+# install yay
+RUN git clone https://aur.archlinux.org/yay.git && \
+    cd yay && \
+    echo "Y" | makepkg -si && \
+    cd /home/yay-install && \
+    rm -rf .cache yay
+
+USER root
+
+RUN pip3 install ROPgadget
 
 VOLUME /localmnt
 
 WORKDIR ~/.local
 
 # install pwndbg for reversing stuff
-RUN git clone https://github.com/pwndbg/pwndbg && \
-    cd pwndbg && \
-    ./setup.sh
+RUN pip3 install pwndbg
+    # git clone https://github.com/pwndbg/pwndbg && \
+    # cd pwndbg && \
+    # ./setup.sh
 
 # install additional tools
 RUN pip3 install pwntools
@@ -31,4 +45,4 @@ RUN cat /tmp/bashrc >> ~/.bashrc && \
 
 WORKDIR /localmnt
 
-CMD ["/usr/bin/bash"]
+CMD ["/usr/bin/zsh"]
