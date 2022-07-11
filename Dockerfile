@@ -19,20 +19,18 @@ RUN git clone https://aur.archlinux.org/yay.git && \
 
 USER root
 
-RUN pip3 install ROPgadget
-
 VOLUME /localmnt
 
 WORKDIR ~/.local
 
-# install pwndbg for reversing stuff
-RUN pip3 install pwndbg
-    # git clone https://github.com/pwndbg/pwndbg && \
-    # cd pwndbg && \
-    # ./setup.sh
-
 # install additional tools
-RUN pip3 install pwntools
+
+## install pwndbg for reversing stuff
+RUN pacman -S --noconfirm pwndbg && \
+    echo 'source /usr/share/pwndbg/gdbinit.py' >> ~/.gdbinit
+
+## install tools from pip3
+RUN pip3 install pwntools ROPgadget
 
 # customization :p
 COPY bashrc /tmp/bashrc
