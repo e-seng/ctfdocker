@@ -2,7 +2,7 @@ FROM archlinux:latest
 
 # install dependencies
 RUN pacman -Syu --noconfirm && \
-    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh base-devel go lib32-glibc
+    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh base-devel go lib32-glibc neovim vim
 
 RUN useradd --system --create-home yay-install && \
     echo "yay-install ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/yay-install
