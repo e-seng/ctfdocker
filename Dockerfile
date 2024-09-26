@@ -1,31 +1,50 @@
-FROM ubuntu:latest
-
-# just helps with scripts
-ENV DEBIAN_FRONTEND=noninteractive
+FROM archlinux:latest
 
 # install dependencies
-RUN apt-get update -y && \
-    apt-get upgrade -y && \
-    apt-get install -y gdb python3 python3-pip git openssh-client netcat man-db vim neovim file tree python3-ropgadget
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh rust base-devel go lib32-glibc neovim vim
+
+RUN useradd --system --create-home yay-install && \
+    echo "yay-install ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/yay-install
+
+USER yay-install
+WORKDIR /home/yay-install
+
+# install yay
+RUN git clone https://aur.archlinux.org/yay.git && \
+    cd yay && \
+    echo "Y" | makepkg -si && \
+    cd /home/yay-install && \
+    rm -rf .cache yay
+
+USER root
 
 VOLUME /localmnt
 
 WORKDIR ~/.local
 
-# install pwndbg for reversing stuff
-RUN git clone https://github.com/pwndbg/pwndbg && \
-    cd pwndbg && \
-    ./setup.sh
-
 # install additional tools
-RUN pip3 install pwntools
+
+## install pwndbg for reversing stuff
+RUN pacman -S --noconfirm pwndbg && \
+    echo 'source /usr/share/pwndbg/gdbinit.py' >> ~/.gdbinit
+
+## install tools from pip3
+RUN pip3 install \
+  pycryptodome \
+  numpy \
+  pwntools \
+  ROPgadget
 
 # customization :p
 COPY bashrc /tmp/bashrc
+COPY zshrc /tmp/zshrc
 
 RUN cat /tmp/bashrc >> ~/.bashrc && \
-    rm /tmp/bashrc
+    cat /tmp/zshrc >> ~/.zshrc && \
+    rm /tmp/bashrc && \
+    rm /tmp/zshrc
 
 WORKDIR /localmnt
 
-CMD ["/bin/bash"]
+CMD ["/usr/bin/zsh"]
