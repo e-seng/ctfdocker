@@ -8,6 +8,7 @@ RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install -y \
       nmap \
+      tmux \
       gdb \
       python3 \
       python3-pip \
