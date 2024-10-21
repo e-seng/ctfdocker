@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install -y \
+      nmap \
       gdb \
       python3 \
       python3-pip \
@@ -23,17 +24,19 @@ RUN apt-get update -y && \
 
 VOLUME /localmnt
 
-WORKDIR ~/.local
+WORKDIR /root/tools
 
 # install pwndbg for reversing stuff
 RUN git clone https://github.com/pwndbg/pwndbg && \
     cd pwndbg && \
     ./setup.sh
+# get CTF command list for reference
+RUN git clone https://github.com/infosec-ucalgary/CTFCommands.git
 
 # customization :p
 COPY bashrc /tmp/bashrc
 
-RUN cat /tmp/bashrc >> ~/.bashrc && \
+RUN cat /tmp/bashrc >> /root/.bashrc && \
     rm /tmp/bashrc
 
 WORKDIR /localmnt
