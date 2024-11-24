@@ -20,6 +20,11 @@ RUN apt-get update -y && \
       neovim \
       file \
       tree \
+      cargo \
+      liblzma-dev \
+      openssl \
+      libssl-dev \
+      pkg-config \
       python3-ropgadget \
       python3-pwntools
 
@@ -34,6 +39,9 @@ RUN git clone https://github.com/pwndbg/pwndbg && \
 
 # get CTF command list for reference
 RUN git clone https://github.com/infosec-ucalgary/CTFCommands.git
+
+# install rust tools
+RUN cargo install pwninit
 
 # customization :p
 COPY bashrc /tmp/bashrc
