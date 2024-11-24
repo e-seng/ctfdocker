@@ -31,14 +31,18 @@ WORKDIR /root/tools
 RUN git clone https://github.com/pwndbg/pwndbg && \
     cd pwndbg && \
     ./setup.sh
+
 # get CTF command list for reference
 RUN git clone https://github.com/infosec-ucalgary/CTFCommands.git
 
 # customization :p
 COPY bashrc /tmp/bashrc
+COPY tmux.conf /tmp/tmux.conf
 
 RUN cat /tmp/bashrc >> /root/.bashrc && \
-    rm /tmp/bashrc
+    cat /tmp/tmux.conf >> /root/.tmux.conf && \
+    rm /tmp/bashrc && \
+    rm /tmp/tmux.conf
 
 WORKDIR /localmnt
 
