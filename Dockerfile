@@ -2,7 +2,7 @@ FROM archlinux:latest
 
 # install dependencies
 RUN pacman -Syu --noconfirm && \
-    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh rust base-devel go lib32-glibc neovim vim
+    pacman -S --noconfirm gdb python3 python-pip git openssh netcat man-db vim neovim file tree zsh rust base-devel go lib32-glibc neovim vim tmux
 
 RUN useradd --system --create-home yay-install && \
     echo "yay-install ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/yay-install
@@ -30,20 +30,24 @@ RUN pacman -S --noconfirm pwndbg && \
     echo 'source /usr/share/pwndbg/gdbinit.py' >> ~/.gdbinit
 
 ## install tools from pip3
-RUN pip3 install \
-  pycryptodome \
-  numpy \
-  pwntools \
-  ROPgadget
+RUN pacman -S --noconfirm \
+  python-pycryptodome \
+  python-numpy \
+  python-pwntools \
+  ropgadget \
+  pwninit
 
 # customization :p
 COPY bashrc /tmp/bashrc
 COPY zshrc /tmp/zshrc
+COPY tmux.conf /tmp/tmux.conf
 
 RUN cat /tmp/bashrc >> ~/.bashrc && \
     cat /tmp/zshrc >> ~/.zshrc && \
+    cat /tmp/tmux.conf >> ~/.tmux.conf && \
     rm /tmp/bashrc && \
-    rm /tmp/zshrc
+    rm /tmp/zshrc && \
+    rm /tmp/tmux.conf
 
 WORKDIR /localmnt
 
