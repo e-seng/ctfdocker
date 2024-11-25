@@ -25,6 +25,8 @@ RUN apt-get update -y && \
       openssl \
       libssl-dev \
       pkg-config \
+      elfutils \
+      patchelf \
       python3-ropgadget \
       python3-pwntools
 
