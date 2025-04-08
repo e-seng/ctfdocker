@@ -32,7 +32,8 @@ RUN apt-get update -y && \
       elfutils \
       patchelf \
       python3-ropgadget \
-      python3-pwntools
+      python3-pwntools \
+      apktool
 
 # create a user, with provided uid/gids. remove any conflicts
 RUN groupdel -f `id -gn $gid` && \
@@ -53,11 +54,17 @@ WORKDIR /home/user/tools
 # install pwndbg for reversing stuff
 RUN git clone https://github.com/pwndbg/pwndbg && \
     cd pwndbg && \
-    ./setup.sh
+    ./setup.sh && \
+    cd ..
+
+# install jadx for android reversing
+
+RUN wget https://nightly.link/skylot/jadx/workflows/build-artifacts/master/jadx-r2412.61f5386.zip && \
+    unzip jadx*.zip -d jadx
 
 # install rust tools for user
 USER user
-RUN cargo install pwninit
+RUN cargo install --locked pwninit
 
 USER root
 
